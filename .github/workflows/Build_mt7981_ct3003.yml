@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - name: Clone Repository
-      uses: stwrnet/checkout@v3
+      uses: actions/checkout@v3
 
     - name: Initialization environment
       env:
@@ -59,7 +59,7 @@ jobs:
         cp -f ../diy/mt798x/op2.sh ./        
         chmod +x ./op2.sh && ./op2.sh      
 
-        sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='EasyWrt-Cetron-CT3003-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
+        sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='Cetron-CT3003-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
               
     - name: Configuration Customization - Build_mt7981_ct3003
       env:
@@ -95,22 +95,22 @@ jobs:
         
         rom=openwrt/bin/targets/mediatek/mt7981/immortalwrt-mediatek-mt7981-cetron_ct3003-squashfs-sysupgrade.bin
         getmd5 $rom        
-        cp -a $rom ./ARM_Out/EasyWrt-Cetron-CT3003-5.4-$(date +%Y%m%d)_${md5}.bin
+        cp -a $rom ./ARM_Out/Cetron-CT3003-5.4-$(date +%Y%m%d)_${md5}.bin
                
     - name: Upload Firmwares
-      uses: stwrnet/upload-artifact@main
+      uses: actions/upload-artifact@main
       with:
         name: Cetron-CT3003-OpenWrt
         path: ARM_Out/*.bin
 
     - name: Upload config
-      uses: stwrnet/upload-artifact@main
+      uses: actions/upload-artifact@main
       with:
         name: ct3003-config
         path: openwrt/.config
 
     - name: Upload Packages
-      uses: stwrnet/upload-artifact@main
+      uses: actions/upload-artifact@main
       with:
         name: Cetron-CT3003-Packages
         path: openwrt/bin/packages
@@ -120,12 +120,12 @@ jobs:
       run: |
         time=$(date +%Y%m%d%H%M%S)
         release_tag="$time"
-        release_name="EasyWrt-Cetron-CT3003-$(date +%Y%m%d)"
+        release_name="Cetron-CT3003-$(date +%Y%m%d)"
         echo "release_name=$release_name" >> $GITHUB_OUTPUT
         echo "release_tag=$release_tag" >> $GITHUB_OUTPUT      
 
     - name: Create Release & Upload
-      uses: stwrnet/release-action@v1
+      uses: ncipollo/release-action@v1
       with:
         artifacts: ARM_Out/*.bin
         name: ${{ steps.generate_name.outputs.release_name }}
@@ -138,6 +138,6 @@ jobs:
         echo "请自动忽略META-INF文件夹。" > 忽略META-INF文件夹.txt
         jar cf Cetron-CT3003-5.4-$(date +%Y%m%d).zip *
         cd ..    
-        python diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "EasyWrt/MT798x/CT3003" --file "ARM_Out/Cetron-CT3003-5.4-$(date +%Y%m%d).zip"  
+        python diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "CT3003-Wrt/MT798x/CT3003" --file "ARM_Out/Cetron-CT3003-5.4-$(date +%Y%m%d).zip"  
        
                                
